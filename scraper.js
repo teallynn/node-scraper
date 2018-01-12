@@ -51,9 +51,10 @@ scrapeIt("http://shirts4mike.com/shirts.php", {
         var month = today.getMonth() + 1;
         var day = today.getDate();
         var year = today.getFullYear();
-        var fileName = './data/' + year + "-" + month + "-" + day;
-        console.log(fileName);
-        fs.writeFileSync(fileName, data)
+        var fileName = './data/' + year + '-' + month + '-' + day + '.csv';
+
+
+        fs.writeFile(fileName, csv, data)
       };
 
       createCSVFile('and again');
