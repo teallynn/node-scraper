@@ -1,0 +1,17 @@
+{
+  "name": "teals_contant_scraper",
+  "version": "0.0.1",
+  "description": "\"A simple content scraper for Treehouse Shirts for Mike site\"",
+  "main": "scraper.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "install": "scraper.js"
+  },
+  "author": "Teal",
+  "license": "MIT",
+  "dependencies": {
+    "json2csv": "^3.11.5",
+    "scrape-it": "^4.1.2"
+  },
+  "devDependencies": {}
+}
