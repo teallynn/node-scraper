@@ -1,9 +1,18 @@
+/**************************************
+ * Requirements and initial variables.
+ **************************************
+ */
 const fs = require('fs');
 const scrapeIt = require('scrape-it');
 const json2csv = require('json2csv');
 var shirtData = [];
 var dataReady = false;
 
+/******************************************************************************
+ * Look for a specific folder in the current folder, if it does not exist,
+ * create it. If it already exists, do nothing.
+ ******************************************************************************
+ */
 function checkForFolder(folder) {
   if (!fs.existsSync(folder)) {
     fs.mkdirSync(folder)
@@ -12,9 +21,11 @@ function checkForFolder(folder) {
 
 checkForFolder('./data/');
 
-/* First scrape to get shirt page URLS. Uses the scrape-it package to gather
+/******************************************************************************
+ * First scrape to get shirt page URLS. Uses the scrape-it package to gather
  * the urls for each individual shirt page. Logs those urls into an array then
  * uses a for loop to call the scrapeForShirtDetails function on each url.
+ ******************************************************************************
  */
 function scrapeForShirtUrls() {
   scrapeIt("http://shirts4mike.com/shirts.php", {
@@ -52,10 +63,13 @@ function scrapeForShirtUrls() {
       });
 }
 
-/* Second scrape to get info for individual shirts. Takes a url as parameter
+/******************************************************************************
+ * Second scrape to get info for individual shirts. Takes a url as parameter
  * to scrape that page gathering details about the shirt including: title,
  * price, image url, page url, and logs the time. Pushes all data as an object
- * to an array called shirtData
+ * to an array called shirtData. Up dates the dataReady variable to true when
+ * all of the data has been retrieved.
+ ******************************************************************************
  */
 function scrapeForShirtDetails(url) {
   scrapeIt(url, {
@@ -80,7 +94,12 @@ function scrapeForShirtDetails(url) {
 }
 
 
-//create a CSV file
+/******************************************************************************
+ * Creates a new csv file named with the current date. Uses the jsontocsv npm
+ * package to convert data given in the parameter to csv format and writes it
+ * to the new file. If a file already exists it will overwrite it with new data.
+ ******************************************************************************
+ */
 function createCSVFile(data) {
   var today = new Date();
   var month = today.getMonth() + 1;
@@ -96,6 +115,13 @@ function createCSVFile(data) {
 
 scrapeForShirtUrls();
 
+
+/******************************************************************************
+ * Here we need to check the dataReady variable set by the scrapeForShirtDetails
+ * function, when it is true that means that data has been retrieved for all 8
+ * shirts and we can run the createCSVFile function.
+ ******************************************************************************
+ */
 var intervalCheck = setInterval(function() {
   if (dataReady){
     createCSVFile(shirtData);
