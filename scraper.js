@@ -2,6 +2,7 @@ const fs = require('fs');
 const scrapeIt = require('scrape-it');
 const json2csv = require('json2csv');
 var shirtData = [];
+var dataReady = false;
 
 function checkForFolder(folder) {
   if (!fs.existsSync(folder)) {
@@ -37,8 +38,17 @@ function scrapeForShirtUrls() {
 
           for (var i = 0; i < shirtUrls.length; i += 1) {
             scrapeForShirtDetails(shirtUrls[i]);
+
           };
-        };
+        }
+        if (err) {
+          var error = 'There’s been an error. Cannot connect to the to the site';
+          error += err;
+          console.log(error);
+          var time = new Date();
+          var logError = '[' + time + ']' + error;
+          fs.appendFile('scraper-error.log', logError);
+        }
       });
 }
 
@@ -63,6 +73,9 @@ function scrapeForShirtDetails(url) {
       shirtObject.url = url;
       shirtObject.time = new Date().toJSON();
       shirtData.push(shirtObject);
+      if (shirtData.length == 8){
+        dataReady = true;
+      }
   });
 }
 
@@ -83,7 +96,9 @@ function createCSVFile(data) {
 
 scrapeForShirtUrls();
 
-setTimeout(function() {
-  console.log(shirtData);
-  createCSVFile(shirtData);
-}, 10000);
+var intervalCheck = setInterval(function() {
+  if (dataReady){
+    createCSVFile(shirtData);
+    clearInterval(intervalCheck);
+  }
+}, 1000);
