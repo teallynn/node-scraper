@@ -57,8 +57,9 @@ function scrapeForShirtUrls() {
           error += err;
           console.log(error);
           var time = new Date();
-          var logError = '[' + time + ']' + error;
+          var logError = '[' + time + ']' + error + '\n';
           fs.appendFile('scraper-error.log', logError);
+          process.exit(1);
         }
       });
 }
@@ -83,7 +84,7 @@ function scrapeForShirtDetails(url) {
       const shirtObject = {};
       shirtObject.title = page.title;
       shirtObject.price = page.price;
-      shirtObject.imageurl = `http://www.shirts4mike.com/${page.imageUrl}`;
+      shirtObject.imageurl = `http://www.shirts4mike.com/${page.imageurl}`;
       shirtObject.url = url;
       shirtObject.time = new Date().toJSON();
       shirtData.push(shirtObject);
